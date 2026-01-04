@@ -1,0 +1,84 @@
+<html>
+<title>Namibia 21-Day Overlanding Map - Roads Only</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<style>#map { height: 100vh; }</style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+<script>
+var map = L.map('map').setView([-21, 15], 6);
+
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+maxZoom: 18,
+attribution: '© OpenStreetMap'
+}).addTo(map);
+
+
+// נקודות לינה
+var locations = [
+{name: 'Windhoek', coords: [-22.35, 17.07]},
+{name: 'Sesriem Campsite', coords: [-24.667, 15.383]},
+{name: 'Swakopmund Hotel', coords: [-22.632, 14.601]},
+{name: 'Palmwag Campsite', coords: [-19.886, 13.937]},
+{name: 'Opuwo Country Hotel', coords: [-18.05, 13.75]},
+{name: 'Epupa Camp', coords: [-17.002, 13.246]},
+{name: 'Okaukuejo Camp', coords: [-19.167, 16.000]},
+{name: 'Halali Camp', coords: [-19.200, 16.300]},
+{name: 'Namutoni Camp', coords: [-18.817, 16.917]},
+{name: 'Waterberg Plateau', coords: [-20.016, 18.333]},
+{name: 'Spitzkoppe Campsite', coords: [-21.836, 15.187]},
+{name: 'Brandberg White Lady Lodge', coords: [-21.015, 14.686]},
+{name: 'Erongo Camps / Lodges', coords: [-21.683, 15.083]}
+];
+
+
+locations.forEach(function(loc) {
+L.marker(loc.coords, {icon: L.icon({iconUrl: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png', iconSize: [32,32]})})
+.addTo(map)
+.bindPopup('<b>' + loc.name + '</b>');
+});
+
+
+// תחנות דלק חיוניות
+var fuelStations = [
+{name: 'Windhoek Fuel Station', coords: [-22.35, 17.07]},
+{name: 'Solitaire Fuel', coords: [-23.842, 15.266]},
+{name: 'Swakopmund Fuel', coords: [-22.637, 14.519]},
+{name: 'Palmwag Fuel', coords: [-19.888, 13.939]},
+{name: 'Opuwo Fuel', coords: [-18.05, 13.75]},
+{name: 'Ruacana Fuel', coords: [-17.48, 13.35]},
+{name: 'Outjo Fuel', coords: [-20.11, 16.15]},
+{name: 'Okahandja Fuel', coords: [-21.99, 16.91]}
+];
+
+
+fuelStations.forEach(function(fuel) {
+L.marker(fuel.coords, {icon: L.icon({iconUrl: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png', iconSize: [32,32]})})
+.addTo(map)
+.bindPopup('<b>Fuel: ' + fuel.name + '</b>');
+});
+
+
+// יצירת מסלול על בסיס כבישים קיימים
+var waypoints = locations.map(function(loc) { return L.latLng(loc.coords[0], loc.coords[1]); });
+
+
+L.Routing.control({
+waypoints: waypoints,
+routeWhileDragging: false,
+show: false,
+lineOptions: {
+styles: [{color: 'red', opacity: 0.8, weight: 4}]
+},
+createMarker: function() { return null; }, // כבר סימנו נקודות ידניות
+}).addTo(map);
+
+
+</script>
+</body>
+</html>
